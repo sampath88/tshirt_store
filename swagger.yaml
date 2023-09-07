@@ -1,0 +1,95 @@
+openapi: 3.0.0
+info:
+  title: Tshirt store API
+  description: LCO - a course to create API for ecomm store
+  version: 1.0.0
+  contact:
+    email: sampath@gmail.com
+    url: "https://somepath.com"
+
+servers:
+  - url: "{protocol}://localhost:4000/api/{version}"
+    description: for localhost only
+    variables:
+      protocol:
+        enum:
+          - http
+          # - https
+        default: http
+      version:
+        enum:
+          - v1
+          # - v2
+        default: v1
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+  schemas:
+    User:
+      type: object
+      properties:
+        firstname:
+          type: string
+        lastname:
+          type: string
+        email:
+          type: string
+        _id:
+          type: string
+        token:
+          type: string
+
+paths:
+  /register:
+    post:
+      tags:
+        - Auth
+      summary: creates new user
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      requestBody:
+        description: Provide all fields
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstname:
+                  type: string
+                lastname:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        201:
+          description: User added successfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/User"
+        400:
+          description: Some of the fields are missing
+          content:
+            application/json:
+              schema:
+                type: string
+                example: All fields are required
+        401:
+          description: User already exists
+          content:
+            application/json:
+              schema:
+                type: string
+                example: User already exists
